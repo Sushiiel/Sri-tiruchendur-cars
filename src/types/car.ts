@@ -28,7 +28,7 @@ export interface Car {
     insuranceStatus?: string;
     insuranceType?: string;
     insuranceValidTill?: string;
-    loan?: string;
+
     noc?: string;
 
     // Pricing
@@ -61,9 +61,6 @@ export interface Car {
     support?: {
         rcTransfer: boolean;
         insurance: boolean;
-        loan: boolean;
-        warranty: boolean;
-        returnPolicy?: boolean;
     };
 
     // Notes

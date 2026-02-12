@@ -78,12 +78,12 @@ export default function CarDetails() {
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <h3 className="section-title mb-4">Vehicle Condition</h3>
                             <div className="grid grid-cols-2 gap-4 text-sm">
-                                <ConditionRow label="Overall" value={car.condition} />
-                                <ConditionRow label="Accident History" value={car.accident} />
-                                <ConditionRow label="Flood Affected" value={car.flood} />
                                 <ConditionRow label="Service History" value={car.serviceHistory} />
                                 <ConditionRow label="Tyres" value={car.tyreCondition} />
+                                <ConditionRow label="Accident History" value={car.accident} />
+                                <ConditionRow label="Flood Affected" value={car.flood} />
                                 <ConditionRow label="Battery" value={car.batteryCondition} />
+                                <ConditionRow label="Overall" value={car.condition} />
                             </div>
                             {car.majorIssues && (
                                 <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
@@ -98,9 +98,6 @@ export default function CarDetails() {
                             <div className="grid grid-cols-2 gap-3">
                                 <SupportItem label="RC Transfer" active={car.support?.rcTransfer} />
                                 <SupportItem label="Insurance Assist" active={car.support?.insurance} />
-                                <SupportItem label="Loan Assist" active={car.support?.loan} />
-                                <SupportItem label="Warranty" active={car.support?.warranty} />
-                                <SupportItem label="Return Policy" active={car.support?.returnPolicy} />
                             </div>
                         </div>
                     </div>
@@ -141,6 +138,7 @@ export default function CarDetails() {
                                 <SpecRow icon="fa-user" label="Ownership" value={car.owner} />
                                 <SpecRow icon="fa-paint-brush" label="Color" value={car.color || 'N/A'} />
                                 <SpecRow icon="fa-car" label="Body Type" value={car.bodyType || 'N/A'} />
+                                <SpecRow icon="fa-file-contract" label="Insurance" value={car.insuranceType || 'N/A'} />
                             </div>
 
                             <div className="bg-gray-50 px-6 py-3 border-t border-b border-gray-100 font-semibold text-gray-700 mt-2">
@@ -149,10 +147,9 @@ export default function CarDetails() {
                             <div className="p-6 grid grid-cols-2 gap-y-4 gap-x-8">
                                 <SpecRow icon="fa-id-card" label="Reg. Number" value={car.regNumber || 'N/A'} />
                                 <SpecRow icon="fa-map-marker-alt" label="RTO" value={car.rto || 'N/A'} />
-                                <SpecRow icon="fa-file-contract" label="Insurance" value={`${car.insuranceStatus || 'N/A'} (${car.insuranceType || ''})`} />
-                                <SpecRow icon="fa-calendar-day" label="Valid Till" value={car.insuranceValidTill || 'N/A'} />
+                                <SpecRow icon="fa-file-contract" label="Insurance Status" value={`${car.insuranceStatus || 'N/A'} (${car.insuranceType || ''})`} />
+                                <SpecRow icon="fa-calendar-day" label="Tax Validity" value={car.insuranceValidTill || 'N/A'} />
                                 <SpecRow icon="fa-file-signature" label="NOC Available" value={car.noc || 'N/A'} />
-                                <SpecRow icon="fa-university" label="Loan / Hypothecation" value={car.loan || 'N/A'} />
                             </div>
                         </div>
 

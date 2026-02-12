@@ -33,10 +33,7 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
         },
         support: {
             rcTransfer: true,
-            insurance: false,
-            loan: false,
-            warranty: false,
-            returnPolicy: false
+            insurance: false
         }
     };
 
@@ -200,16 +197,11 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
                                     <option value="Third Party">Third Party</option>
                                 </select>
                             </FormGroup>
-                            <FormGroup label="Valid Till">
+                            <FormGroup label="Tax Validity">
                                 <input {...register('insuranceValidTill')} type="date" className="input-field" />
                             </FormGroup>
                         </div>
-                        <FormGroup label="Hypothecation (Loan)">
-                            <select {...register('loan')} className="input-field">
-                                <option value="No">No</option>
-                                <option value="Yes">Yes</option>
-                            </select>
-                        </FormGroup>
+
                         <FormGroup label="NOC Available">
                             <select {...register('noc')} className="input-field">
                                 <option value="Yes">Yes</option>
@@ -354,9 +346,6 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
                     <div className="flex flex-wrap gap-6 mb-8">
                         <label className="flex items-center gap-2"><input type="checkbox" {...register('support.rcTransfer')} className="checkbox" /> RC Transfer Support</label>
                         <label className="flex items-center gap-2"><input type="checkbox" {...register('support.insurance')} className="checkbox" /> Insurance Assistance</label>
-                        <label className="flex items-center gap-2"><input type="checkbox" {...register('support.loan')} className="checkbox" /> Loan Assistance</label>
-                        <label className="flex items-center gap-2"><input type="checkbox" {...register('support.warranty')} className="checkbox" /> Warranty</label>
-                        <label className="flex items-center gap-2"><input type="checkbox" {...register('support.returnPolicy')} className="checkbox" /> Return / Replacement Policy</label>
                     </div>
 
                     <h3 className="section-title">9. Additional Notes</h3>
