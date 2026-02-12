@@ -1,7 +1,7 @@
 ---
 title: Sri Tiruchendur Cars
 emoji: 🚗
-colorFrom: orange
+colorFrom: yellow
 colorTo: red
 sdk: docker
 pinned: false
