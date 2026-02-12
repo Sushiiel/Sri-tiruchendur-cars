@@ -56,8 +56,8 @@ export default function Contact() {
                         <ContactCard
                             icon="fa-envelope"
                             title="Email Us"
-                            content="info@sritiruchendurcars.com"
-                            action="mailto:info@sritiruchendurcars.com"
+                            content="sritiruchendurcars@gmail.com"
+                            action="mailto:sritiruchendurcars@gmail.com"
                         />
                         <ContactCard
                             icon="fa-clock"
@@ -145,16 +145,17 @@ export default function Contact() {
                 </div>
             </div>
 
-            {/* Map Embed */}
-            <div className="h-96 w-full bg-gray-200">
+            {/* Map Section */}
+            <div className="bg-gray-200 h-96 w-full">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15797.66981881525!2d78.1189!3d8.4839!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b03886f37685655%3A0xe104cf2863f6990!2sTiruchendur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1645451234567!5m2!1sen!2sin"
+                    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3907.6599787680796!2d78.1414440750548!3d11.671333288535695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTHCsDQwJzE2LjgiTiA3OMKwMDgnMzcuMSJF!5e0!3m2!1sen!2sin!4v1709827000000!5m2!1sen!2sin"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
-                    title="Location Map"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Sri Tiruchendur Cars Location"
                 ></iframe>
             </div>
 

@@ -51,7 +51,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-2">
                                 <i className="fas fa-envelope text-primary"></i>
-                                <span>contact@sritiruchendurcars.com</span>
+                                <span>sritiruchendurcars@gmail.com</span>
                             </li>
                         </ul>
                     </div>
