@@ -50,8 +50,8 @@ export default function Contact() {
                         <ContactCard
                             icon="fa-phone-alt"
                             title="Call Us"
-                            content="+91 98427 54254"
-                            action="tel:+919842754254"
+                            content="+91 96295 09333"
+                            action="tel:+919629509333"
                         />
                         <ContactCard
                             icon="fa-envelope"

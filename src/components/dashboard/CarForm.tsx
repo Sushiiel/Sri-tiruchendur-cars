@@ -26,8 +26,8 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
         features: [],
         seller: {
             name: 'V. Anand',
-            phone: '9842754254',
-            whatsapp: '9842754254',
+            phone: '9629509333',
+            whatsapp: '9629509333',
             location: 'Tiruchendur',
             workingHours: '9 AM - 9 PM'
         },

@@ -39,8 +39,8 @@ export const useCarStore = create<CarStore>()(
                     features: ["Power Steering", "ABS", "Airbags", "AC", "Music System"],
                     seller: {
                         name: "V. Anand",
-                        phone: "9842754254",
-                        whatsapp: "9842754254",
+                        phone: "9629509333",
+                        whatsapp: "9629509333",
                         location: "Salem"
                     }
                 },
@@ -63,8 +63,8 @@ export const useCarStore = create<CarStore>()(
                     features: ["Sunroof", "Touchscreen", "Alloy Wheels", "Cruise Control", "6 Airbags"],
                     seller: {
                         name: "V. Anand",
-                        phone: "9842754254",
-                        whatsapp: "9842754254",
+                        phone: "9629509333",
+                        whatsapp: "9629509333",
                         location: "Salem"
                     }
                 },
@@ -87,8 +87,8 @@ export const useCarStore = create<CarStore>()(
                     features: ["7 Seater", "Captain Seats", "Rear AC", "ABS", "Airbags"],
                     seller: {
                         name: "V. Anand",
-                        phone: "9842754254",
-                        whatsapp: "9842754254",
+                        phone: "9629509333",
+                        whatsapp: "9629509333",
                         location: "Salem"
                     }
                 },
@@ -111,8 +111,8 @@ export const useCarStore = create<CarStore>()(
                     features: ["Sunroof", "Leather Seats", "LED Headlamps", "Lane Watch Camera", "Paddle Shifters"],
                     seller: {
                         name: "V. Anand",
-                        phone: "9842754254",
-                        whatsapp: "9842754254",
+                        phone: "9629509333",
+                        whatsapp: "9629509333",
                         location: "Salem"
                     }
                 },
@@ -136,8 +136,8 @@ export const useCarStore = create<CarStore>()(
                     features: ["4x4", "Touchscreen", "Convertible Top", "All Terrain Tyres"],
                     seller: {
                         name: "V. Anand",
-                        phone: "9842754254",
-                        whatsapp: "9842754254",
+                        phone: "9629509333",
+                        whatsapp: "9629509333",
                         location: "Salem"
                     }
                 }
