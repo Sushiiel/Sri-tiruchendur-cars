@@ -33,7 +33,8 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
         },
         support: {
             rcTransfer: true,
-            insurance: false
+            insurance: false,
+            loan: false
         }
     };
 
@@ -346,6 +347,7 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
                     <div className="flex flex-wrap gap-6 mb-8">
                         <label className="flex items-center gap-2"><input type="checkbox" {...register('support.rcTransfer')} className="checkbox" /> RC Transfer Support</label>
                         <label className="flex items-center gap-2"><input type="checkbox" {...register('support.insurance')} className="checkbox" /> Insurance Assistance</label>
+                        <label className="flex items-center gap-2"><input type="checkbox" {...register('support.loan')} className="checkbox" /> Loan Assistance</label>
                     </div>
 
                     <h3 className="section-title">9. Additional Notes</h3>

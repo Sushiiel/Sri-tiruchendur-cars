@@ -98,6 +98,7 @@ export default function CarDetails() {
                             <div className="grid grid-cols-2 gap-3">
                                 <SupportItem label="RC Transfer" active={car.support?.rcTransfer} />
                                 <SupportItem label="Insurance Assist" active={car.support?.insurance} />
+                                <SupportItem label="Loan Assist" active={car.support?.loan} />
                             </div>
                         </div>
                     </div>

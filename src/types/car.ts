@@ -61,6 +61,7 @@ export interface Car {
     support?: {
         rcTransfer: boolean;
         insurance: boolean;
+        loan: boolean;
     };
 
     // Notes
