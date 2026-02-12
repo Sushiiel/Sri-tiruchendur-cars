@@ -14,20 +14,19 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine
 
-# Create user with UID 1000 (required by Hugging Face Spaces)
-RUN adduser -D -u 1000 user
-USER user
+# Install serve globally as root
+RUN npm install -g serve
+
+# Switch to non-root user 'node' (UID 1000) - Required by Hugging Face Spaces
+USER node
 
 WORKDIR /app
 
-# Install serve globally for the user
-RUN npm install -g serve
-
 # Copy built files from builder
-COPY --from=builder --chown=user /app/dist ./dist
+COPY --from=builder --chown=node /app/dist ./dist
 
-# Expose port 7860 (Hugging Face Spaces default)
+# Expose port (HF uses 7860)
 EXPOSE 7860
 
-# Serve the production build
+# Start server
 CMD ["serve", "-s", "dist", "-l", "7860"]
