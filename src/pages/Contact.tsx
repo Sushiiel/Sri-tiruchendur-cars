@@ -45,7 +45,7 @@ export default function Contact() {
                         <ContactCard
                             icon="fa-map-marker-alt"
                             title="Visit Us"
-                            content="123, Main Road, Tiruchendur - 628215, Tamil Nadu"
+                            content="No. 315 Brindavan Main Road, SKS Hospital road fairlands, salem-636016"
                         />
                         <ContactCard
                             icon="fa-phone-alt"

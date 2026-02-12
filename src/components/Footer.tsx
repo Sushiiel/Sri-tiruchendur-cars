@@ -13,7 +13,7 @@ export default function Footer() {
                             <span className="text-xl font-bold">Sri Tiruchendur <span className="text-primary">Cars</span></span>
                         </div>
                         <p className="text-gray-400 text-sm">
-                            Your trusted partner for buying and selling premium pre-owned cars in Tiruchendur.
+                            Your trusted partner for buying and selling premium pre-owned cars in Salem.
                         </p>
                     </div>
 
@@ -43,7 +43,7 @@ export default function Footer() {
                         <ul className="space-y-2 text-gray-400">
                             <li className="flex items-start gap-2">
                                 <i className="fas fa-map-marker-alt mt-1 text-primary"></i>
-                                <span>Tiruchendur, Tamil Nadu</span>
+                                <span>No. 315 Brindavan Main Road, SKS Hospital road fairlands, salem-636016</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <i className="fas fa-phone text-primary"></i>

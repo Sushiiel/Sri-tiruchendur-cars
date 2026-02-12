@@ -41,7 +41,7 @@ export const useCarStore = create<CarStore>()(
                         name: "V. Anand",
                         phone: "9842754254",
                         whatsapp: "9842754254",
-                        location: "Tiruchendur"
+                        location: "Salem"
                     }
                 },
                 {
@@ -65,7 +65,7 @@ export const useCarStore = create<CarStore>()(
                         name: "V. Anand",
                         phone: "9842754254",
                         whatsapp: "9842754254",
-                        location: "Tiruchendur"
+                        location: "Salem"
                     }
                 },
                 {
@@ -89,7 +89,7 @@ export const useCarStore = create<CarStore>()(
                         name: "V. Anand",
                         phone: "9842754254",
                         whatsapp: "9842754254",
-                        location: "Tiruchendur"
+                        location: "Salem"
                     }
                 },
                 {
@@ -113,7 +113,7 @@ export const useCarStore = create<CarStore>()(
                         name: "V. Anand",
                         phone: "9842754254",
                         whatsapp: "9842754254",
-                        location: "Tiruchendur"
+                        location: "Salem"
                     }
                 },
                 {
@@ -138,7 +138,7 @@ export const useCarStore = create<CarStore>()(
                         name: "V. Anand",
                         phone: "9842754254",
                         whatsapp: "9842754254",
-                        location: "Tiruchendur"
+                        location: "Salem"
                     }
                 }
             ],
