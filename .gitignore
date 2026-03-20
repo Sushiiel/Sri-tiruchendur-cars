@@ -28,6 +28,9 @@ dist-ssr
 .env.local
 .env.production
 
+# Vercel
+.vercel
+
 # Large binary files (ignored for git, use small versions or external links)
 public/Car_Exterior_Video_For_Model.mp4
 public/logo.png

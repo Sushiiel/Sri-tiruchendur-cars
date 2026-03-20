@@ -1,23 +1,9 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Car } from '../types/car';
-import * as api from '../services/api';
+import { put, list } from '@vercel/blob';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-interface CarStore {
-    cars: Car[];
-    isAdmin: boolean;
-    isLoading: boolean;
-    isSynced: boolean;
-    error: string | null;
-    addCar: (car: Car) => void;
-    updateCar: (id: number, car: Car) => void;
-    deleteCar: (id: number) => void;
-    setAdmin: (isAdmin: boolean) => void;
-    syncWithBlob: () => Promise<void>;
-    uploadCarImage: (file: File) => Promise<string>;
-}
+const CARS_BLOB_KEY = 'data/cars.json';
 
-const DEFAULT_CARS: Car[] = [
+const DEFAULT_CARS = [
     {
         id: 1,
         name: "Maruti Swift VXI",
@@ -29,7 +15,7 @@ const DEFAULT_CARS: Car[] = [
         fuel: "Petrol",
         km: "25000",
         transmission: "Manual",
-        price: "6,50,000",
+        price: "650000",
         priceType: "Negotiable",
         image: "https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&q=80&w=800",
         video: "https://www.youtube.com/watch?v=D-yD2A_hZjk",
@@ -45,7 +31,9 @@ const DEFAULT_CARS: Car[] = [
             phone: "9629509333",
             whatsapp: "9629509333",
             location: "Salem"
-        }
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     },
     {
         id: 2,
@@ -57,7 +45,7 @@ const DEFAULT_CARS: Car[] = [
         fuel: "Petrol",
         km: "18000",
         transmission: "Manual",
-        price: "7,25,000",
+        price: "725000",
         priceType: "Fixed",
         image: "https://images.unsplash.com/photo-1621689718428-c167df38c560?auto=format&fit=crop&q=80&w=800",
         owner: "1st Owner",
@@ -69,7 +57,9 @@ const DEFAULT_CARS: Car[] = [
             phone: "9629509333",
             whatsapp: "9629509333",
             location: "Salem"
-        }
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     },
     {
         id: 3,
@@ -81,7 +71,7 @@ const DEFAULT_CARS: Car[] = [
         fuel: "Diesel",
         km: "65000",
         transmission: "Manual",
-        price: "18,50,000",
+        price: "1850000",
         priceType: "Negotiable",
         image: "https://images.unsplash.com/photo-1619468129141-8f5d0f1c65d6?auto=format&fit=crop&q=80&w=800",
         owner: "1st Owner",
@@ -93,7 +83,9 @@ const DEFAULT_CARS: Car[] = [
             phone: "9629509333",
             whatsapp: "9629509333",
             location: "Salem"
-        }
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     },
     {
         id: 4,
@@ -105,7 +97,7 @@ const DEFAULT_CARS: Car[] = [
         fuel: "Petrol",
         km: "12000",
         transmission: "CVT",
-        price: "14,00,000",
+        price: "1400000",
         priceType: "Slightly Negotiable",
         image: "https://images.unsplash.com/photo-1605559424843-9e4c2287f38e?auto=format&fit=crop&q=80&w=800",
         owner: "1st Owner",
@@ -117,7 +109,9 @@ const DEFAULT_CARS: Car[] = [
             phone: "9629509333",
             whatsapp: "9629509333",
             location: "Salem"
-        }
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     },
     {
         id: 5,
@@ -129,7 +123,7 @@ const DEFAULT_CARS: Car[] = [
         fuel: "Diesel",
         km: "5000",
         transmission: "Automatic",
-        price: "19,00,000",
+        price: "1900000",
         priceType: "Fixed",
         image: "https://images.unsplash.com/photo-1626071466175-10a48483569a?auto=format&fit=crop&q=80&w=800",
         video: "https://www.youtube.com/watch?v=J_qD7d9_F-w",
@@ -142,86 +136,51 @@ const DEFAULT_CARS: Car[] = [
             phone: "9629509333",
             whatsapp: "9629509333",
             location: "Salem"
-        }
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
     }
 ];
 
-export const useCarStore = create<CarStore>()(
-    persist(
-        (set) => ({
-            cars: DEFAULT_CARS,
-            isAdmin: false,
-            isLoading: false,
-            isSynced: false,
-            error: null,
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
-            // Sync with Vercel Blob on app load (production only)
-            syncWithBlob: async () => {
-                set({ isLoading: true, error: null });
-                try {
-                    const cars = await api.fetchCars();
-                    if (cars.length > 0) {
-                        set({ cars, isSynced: true, isLoading: false });
-                    } else {
-                        // Blob is empty, use local defaults
-                        set({ isSynced: true, isLoading: false });
-                    }
-                } catch (error: any) {
-                    console.warn('Blob sync failed, using local data:', error);
-                    set({ isLoading: false, error: error.message });
-                }
-            },
+    if (req.method !== 'POST') {
+        return res.status(405).json({ success: false, error: 'Use POST to seed' });
+    }
 
-            addCar: (car) => {
-                // Optimistically update local state
-                set((state) => ({ cars: [...state.cars, car] }));
+    try {
+        // Check if data already exists
+        const { blobs } = await list({ prefix: CARS_BLOB_KEY });
 
-                // Persist to Blob in background
-                api.addCar(car).catch((error) => {
-                    console.error('Failed to persist car to Blob:', error);
-                });
-            },
-
-            updateCar: (id, updatedCar) => {
-                // Optimistically update local state
-                set((state) => ({
-                    cars: state.cars.map((car) =>
-                        car.id === id ? updatedCar : car
-                    ),
-                }));
-
-                // Persist to Blob in background
-                api.updateCar(id, updatedCar).catch((error) => {
-                    console.error('Failed to update car in Blob:', error);
-                });
-            },
-
-            deleteCar: (id) => {
-                // Optimistically update local state
-                set((state) => ({
-                    cars: state.cars.filter((car) => car.id !== id),
-                }));
-
-                // Persist to Blob in background
-                api.deleteCar(id).catch((error) => {
-                    console.error('Failed to delete car from Blob:', error);
-                });
-            },
-
-            setAdmin: (isAdmin) => set({ isAdmin }),
-
-            uploadCarImage: async (file: File) => {
-                try {
-                    const url = await api.uploadImage(file);
-                    return url;
-                } catch (error) {
-                    console.error('Image upload failed:', error);
-                    throw error;
-                }
-            },
-        }),
-        {
-            name: 'car-storage',
+        if (blobs.length > 0 && !req.query.force) {
+            return res.status(200).json({
+                success: true,
+                message: 'Data already exists. Use ?force=true to overwrite.',
+                count: blobs.length,
+            });
         }
-    )
-);
+
+        // Seed the data
+        const jsonContent = JSON.stringify(DEFAULT_CARS, null, 2);
+        const blob = await put(CARS_BLOB_KEY, jsonContent, {
+            access: 'private',
+            addRandomSuffix: false,
+            contentType: 'application/json',
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Database seeded with default cars',
+            count: DEFAULT_CARS.length,
+            blobUrl: blob.url,
+        });
+    } catch (error: any) {
+        console.error('Seed Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to seed data',
+            details: error.message,
+        });
+    }
+}
