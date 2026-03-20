@@ -129,9 +129,9 @@ export default function Home() {
             <section className="py-16 bg-white overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        <div>
+                        <div className="text-center lg:text-left">
                             <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Choose <span className="text-primary">Sri Tiruchendur Cars?</span></h2>
-                            <div className="space-y-6">
+                            <div className="space-y-6 inline-block text-left">
                                 <FeatureItem
                                     icon="fa-check-circle"
                                     title="Quality Tested"
@@ -149,12 +149,12 @@ export default function Home() {
                                 />
                             </div>
                         </div>
-                        <div className="relative">
+                        <div className="relative flex justify-center lg:justify-end">
                             <div className="absolute -inset-4 bg-orange-100 rounded-full blur-3xl opacity-30"></div>
                             <img
                                 src="/Anand Picture.jpeg"
                                 alt="V. Anand - Sri Tiruchendur Cars"
-                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-h-[28rem] w-auto"
+                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-h-[32rem] w-auto"
                             />
                         </div>
                     </div>
