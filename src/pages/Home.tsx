@@ -124,8 +124,8 @@ export default function Home() {
             {/* Why Choose Us */}
             <section className="py-16 bg-white overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
-                        <div className="md:col-span-3">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div>
                             <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Choose <span className="text-primary">Sri Tiruchendur Cars?</span></h2>
                             <div className="space-y-6">
                                 <FeatureItem
@@ -145,15 +145,13 @@ export default function Home() {
                                 />
                             </div>
                         </div>
-                        <div className="md:col-span-2 flex justify-center">
-                            <div className="relative">
-                                <div className="absolute -inset-4 bg-orange-100 rounded-full blur-3xl opacity-30"></div>
-                                <img
-                                    src="/Anand Picture.jpeg"
-                                    alt="V. Anand - Sri Tiruchendur Cars"
-                                    className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 object-cover w-64 h-80"
-                                />
-                            </div>
+                        <div className="relative">
+                            <div className="absolute -inset-4 bg-orange-100 rounded-full blur-3xl opacity-30"></div>
+                            <img
+                                src="/Anand Picture.jpeg"
+                                alt="V. Anand - Sri Tiruchendur Cars"
+                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500"
+                            />
                         </div>
                     </div>
                 </div>
