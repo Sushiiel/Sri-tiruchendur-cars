@@ -56,9 +56,9 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Services Section - Full Page */}
-            <section className="min-h-screen flex items-center bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            {/* Services Section */}
+            <section className="py-16 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">We provide a comprehensive range of automotive services to meet all your needs.</p>
@@ -89,9 +89,9 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Featured Cars Section - Full Page */}
-            <section className="min-h-screen flex items-center bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
+            {/* Featured Cars Section */}
+            <section className="py-16 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-end mb-8">
                         <div>
                             <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Cars</h2>
@@ -125,8 +125,8 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Why Choose Us - Full Page */}
-            <section className="min-h-screen flex items-center bg-white overflow-hidden">
+            {/* Why Choose Us */}
+            <section className="py-16 bg-white overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
@@ -154,7 +154,7 @@ export default function Home() {
                             <img
                                 src="/Anand Picture.jpeg"
                                 alt="V. Anand - Sri Tiruchendur Cars"
-                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-h-96 w-auto"
+                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-h-[28rem] w-auto"
                             />
                         </div>
                     </div>
