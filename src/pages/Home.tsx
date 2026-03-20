@@ -13,8 +13,8 @@ export default function Home() {
     return (
         <div className="bg-gray-50 min-h-screen">
 
-            {/* Hero Section */}
-            <div className="relative pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden">
+            {/* Hero Section - Full Page */}
+            <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
                 <div className="bg-gradient-to-r from-orange-50 to-white absolute inset-0 z-0"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center max-w-3xl mx-auto">
@@ -50,11 +50,15 @@ export default function Home() {
                         </motion.div>
                     </div>
                 </div>
+                {/* Scroll indicator */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+                    <i className="fas fa-chevron-down text-gray-400 text-2xl"></i>
+                </div>
             </div>
 
-            {/* Services Section */}
-            <section className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Services Section - Full Page */}
+            <section className="min-h-screen flex items-center bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">We provide a comprehensive range of automotive services to meet all your needs.</p>
@@ -85,9 +89,9 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Featured Cars Section */}
-            <section className="py-16 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Featured Cars Section - Full Page */}
+            <section className="min-h-screen flex items-center bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16">
                     <div className="flex justify-between items-end mb-8">
                         <div>
                             <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Cars</h2>
@@ -121,8 +125,8 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Why Choose Us */}
-            <section className="py-16 bg-white overflow-hidden">
+            {/* Why Choose Us - Full Page */}
+            <section className="min-h-screen flex items-center bg-white overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
