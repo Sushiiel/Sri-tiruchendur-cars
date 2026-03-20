@@ -154,7 +154,7 @@ export default function Home() {
                             <img
                                 src="/Anand Picture.jpeg"
                                 alt="V. Anand - Sri Tiruchendur Cars"
-                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500"
+                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-h-96 w-auto"
                             />
                         </div>
                     </div>
