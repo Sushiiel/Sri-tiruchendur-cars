@@ -67,6 +67,13 @@ export interface Car {
     // Notes
     notes?: string;
 
+    // Gallery (multiple images stored in Vercel Blob)
+    galleryImages?: string[];
+
+    // Timestamps
+    createdAt?: string;
+    updatedAt?: string;
+
     // Legacy
     details?: {
         owner: string;

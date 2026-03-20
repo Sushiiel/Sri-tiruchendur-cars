@@ -212,8 +212,8 @@ export const useCarStore = create<CarStore>()(
 
             uploadCarImage: async (file: File) => {
                 try {
-                    const url = await api.uploadImage(file);
-                    return url;
+                    const result = await api.uploadFile(file);
+                    return result.url;
                 } catch (error) {
                     console.error('Image upload failed:', error);
                     throw error;

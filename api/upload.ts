@@ -46,9 +46,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const contentType = req.headers['content-type'] || 'application/octet-stream';
         const body = await collectBody(req);
 
-        // Upload to Vercel Blob (private, encrypted)
-        const blob = await put(`images/${Date.now()}-${filename}`, body, {
-            access: 'private',
+        if (body.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Empty file body',
+            });
+        }
+
+        // Sanitize filename
+        const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const blobPath = `cars/${Date.now()}-${safeName}`;
+
+        // Upload to Vercel Blob
+        // Using 'public' access so car images can be displayed to all visitors
+        const blob = await put(blobPath, body, {
+            access: 'public',
             contentType: contentType,
             addRandomSuffix: true,
         });
@@ -58,7 +70,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             url: blob.url,
             pathname: blob.pathname,
             contentType: blob.contentType,
-            message: 'Image uploaded successfully',
+            size: body.length,
+            message: 'File uploaded successfully to Vercel Blob',
         });
     } catch (error: any) {
         console.error('Upload Error:', error);

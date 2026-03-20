@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCarStore } from '../../store/carStore';
 import { Car } from '../../types/car';
+import { uploadFile } from '../../services/api';
 
 interface CarFormProps {
     carId?: number | null;
@@ -16,9 +17,26 @@ const TABS = [
     { id: 'media_seller', label: '4. Media & Seller', icon: 'fa-camera' },
 ];
 
+// Max file size: 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
 export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
     const { cars, addCar, updateCar } = useCarStore();
     const [activeTab, setActiveTab] = useState('basic');
+
+    // Upload state
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState('');
+    const [uploadError, setUploadError] = useState('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [isDragActive, setIsDragActive] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Gallery upload state
+    const [galleryImages, setGalleryImages] = useState<string[]>([]);
+    const [isUploadingGallery, setIsUploadingGallery] = useState(false);
+    const galleryInputRef = useRef<HTMLInputElement>(null);
 
     const existingCar = carId ? cars.find(c => c.id === carId) : null;
 
@@ -53,11 +71,112 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
         }
     }, [brand, model, variant, setValue]);
 
+    // Set initial preview from existing car
+    useEffect(() => {
+        if (existingCar?.image) {
+            setImagePreview(existingCar.image);
+        }
+    }, [existingCar]);
+
+    // =================== File Upload Handlers ===================
+
+    const validateFile = (file: File): string | null => {
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            return `Invalid file type: ${file.type}. Allowed: JPEG, PNG, WebP, GIF`;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            return `File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Max: 10MB`;
+        }
+        return null;
+    };
+
+    const handleFileUpload = async (file: File) => {
+        const error = validateFile(file);
+        if (error) {
+            setUploadError(error);
+            return;
+        }
+
+        setIsUploading(true);
+        setUploadError('');
+        setUploadProgress('Uploading...');
+
+        // Show local preview immediately
+        const localPreview = URL.createObjectURL(file);
+        setImagePreview(localPreview);
+
+        try {
+            const result = await uploadFile(file);
+            setValue('image', result.url);
+            setImagePreview(result.url);
+            setUploadProgress(`✓ Uploaded (${(result.size / 1024).toFixed(0)} KB)`);
+        } catch (err: any) {
+            setUploadError(`Upload failed: ${err.message}`);
+            setImagePreview(null);
+            setUploadProgress('');
+        } finally {
+            setIsUploading(false);
+            URL.revokeObjectURL(localPreview);
+        }
+    };
+
+    const handleGalleryUpload = async (files: FileList) => {
+        setIsUploadingGallery(true);
+        const newUrls: string[] = [];
+
+        for (const file of Array.from(files)) {
+            const error = validateFile(file);
+            if (error) continue;
+
+            try {
+                const result = await uploadFile(file);
+                newUrls.push(result.url);
+            } catch (err) {
+                console.error('Gallery upload failed:', err);
+            }
+        }
+
+        setGalleryImages(prev => [...prev, ...newUrls]);
+        setIsUploadingGallery(false);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragActive(false);
+        const file = e.dataTransfer.files[0];
+        if (file) handleFileUpload(file);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragActive(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragActive(false);
+    };
+
+    const removeMainImage = () => {
+        setImagePreview(null);
+        setValue('image', '');
+        setUploadProgress('');
+        setUploadError('');
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
+    const removeGalleryImage = (index: number) => {
+        setGalleryImages(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // =================== Form Submit ===================
+
     const onSubmit = (data: Car) => {
         const carData = {
             ...data,
             id: carId || Date.now(),
             price: data.price.replace(/,/g, ''),
+            // Include gallery images if any
+            ...(galleryImages.length > 0 && { galleryImages }),
         };
 
         if (carId) {
@@ -304,23 +423,196 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
 
                 {/* TAB 4: MEDIA, SELLER, NOTES */}
                 <div className={activeTab === 'media_seller' ? 'block' : 'hidden'}>
-                    <h3 className="section-title">6. Photos / Media (URLs for now)</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <FormGroup label="Main Image URL">
-                            <input {...register('image')} className="input-field" placeholder="https://..." />
-                        </FormGroup>
-                        <FormGroup label="Video URL">
+                    <h3 className="section-title">
+                        <i className="fas fa-cloud-upload-alt mr-2 text-primary"></i>
+                        6. Upload Car Photos
+                    </h3>
+
+                    {/* ===== MAIN IMAGE UPLOAD ===== */}
+                    <div className="mb-8">
+                        <label className="text-sm font-semibold text-gray-700 mb-2 block">Main Photo *</label>
+
+                        {imagePreview ? (
+                            /* Image Preview */
+                            <div className="relative group rounded-xl overflow-hidden border-2 border-green-300 bg-gray-50" style={{ maxWidth: '400px' }}>
+                                <img
+                                    src={imagePreview}
+                                    alt="Car preview"
+                                    className="w-full h-56 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors shadow-lg"
+                                    >
+                                        <i className="fas fa-sync-alt mr-2"></i>Replace
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={removeMainImage}
+                                        className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors shadow-lg"
+                                    >
+                                        <i className="fas fa-trash mr-2"></i>Remove
+                                    </button>
+                                </div>
+                                {uploadProgress && (
+                                    <div className="absolute bottom-0 left-0 right-0 bg-green-500/90 text-white text-xs py-1.5 px-3 flex items-center gap-2">
+                                        <i className="fas fa-check-circle"></i>
+                                        {uploadProgress}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            /* Drag & Drop Upload Zone */
+                            <div
+                                onDrop={handleDrop}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onClick={() => fileInputRef.current?.click()}
+                                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${isDragActive
+                                    ? 'border-primary bg-orange-50 scale-[1.02] shadow-lg'
+                                    : 'border-gray-300 hover:border-primary hover:bg-orange-50/30'
+                                    } ${isUploading ? 'opacity-60 pointer-events-none' : ''}`}
+                            >
+                                {isUploading ? (
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                        <p className="text-primary font-medium">Uploading to Vercel Blob...</p>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center">
+                                            <i className="fas fa-cloud-upload-alt text-3xl text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-gray-700">
+                                                {isDragActive ? 'Drop your photo here!' : 'Drag & Drop car photo here'}
+                                            </p>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                or <span className="text-primary font-medium underline">click to browse</span>
+                                            </p>
+                                        </div>
+                                        <p className="text-xs text-gray-400">JPEG, PNG, WebP • Max 10MB</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Hidden file input */}
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleFileUpload(file);
+                            }}
+                        />
+
+                        {/* Error message */}
+                        {uploadError && (
+                            <div className="mt-2 bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {uploadError}
+                            </div>
+                        )}
+
+                        {/* Fallback URL input */}
+                        <div className="mt-3">
+                            <details className="text-sm">
+                                <summary className="text-gray-500 cursor-pointer hover:text-primary transition-colors">
+                                    <i className="fas fa-link mr-1"></i> Or paste an image URL instead
+                                </summary>
+                                <div className="mt-2">
+                                    <input
+                                        {...register('image')}
+                                        className="input-field"
+                                        placeholder="https://example.com/car-photo.jpg"
+                                        onChange={(e) => {
+                                            setValue('image', e.target.value);
+                                            if (e.target.value) setImagePreview(e.target.value);
+                                        }}
+                                    />
+                                </div>
+                            </details>
+                        </div>
+
+                        {/* Hidden field for the actual image URL */}
+                        <input type="hidden" {...register('image')} />
+                    </div>
+
+                    {/* ===== GALLERY IMAGES ===== */}
+                    <div className="mb-8">
+                        <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                            <i className="fas fa-images mr-1 text-primary"></i>
+                            Additional Photos (Gallery)
+                        </label>
+
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            {galleryImages.map((url, i) => (
+                                <div key={i} className="relative w-24 h-24 rounded-lg overflow-hidden border-2 border-gray-200 group">
+                                    <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeGalleryImage(i)}
+                                        className="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+
+                            {/* Add more button */}
+                            <button
+                                type="button"
+                                onClick={() => galleryInputRef.current?.click()}
+                                disabled={isUploadingGallery}
+                                className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 hover:border-primary hover:bg-orange-50/30 flex flex-col items-center justify-center gap-1 transition-all cursor-pointer disabled:opacity-50"
+                            >
+                                {isUploadingGallery ? (
+                                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <>
+                                        <i className="fas fa-plus text-gray-400"></i>
+                                        <span className="text-[10px] text-gray-400">Add Photo</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+
+                        <input
+                            ref={galleryInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            multiple
+                            className="hidden"
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files.length > 0) {
+                                    handleGalleryUpload(e.target.files);
+                                }
+                            }}
+                        />
+                        <p className="text-xs text-gray-400">Upload multiple photos: Front, Rear, Sides, Interior, Dashboard, Engine</p>
+                    </div>
+
+                    {/* ===== VIDEO URL ===== */}
+                    <div className="mb-8">
+                        <FormGroup label="Video URL (YouTube / Direct Link)">
                             <input {...register('video')} className="input-field" placeholder="https://youtube.com/..." />
                         </FormGroup>
-                        <div className="md:col-span-2">
-                            <p className="text-sm font-semibold mb-2">Internal Checklist (Tick if taken)</p>
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                                {['Front View', 'Rear View', 'Left Side', 'Right Side', 'Interior', 'Dashboard', 'Odometer', 'Engine Bay', 'Tyres', 'Video Taken'].map(item => (
-                                    <label key={item} className="flex items-center gap-2">
-                                        <input type="checkbox" className="checkbox" /> {item}
-                                    </label>
-                                ))}
-                            </div>
+                    </div>
+
+                    {/* ===== INTERNAL CHECKLIST ===== */}
+                    <div className="mb-8">
+                        <p className="text-sm font-semibold mb-2">Internal Checklist (Tick if taken)</p>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                            {['Front View', 'Rear View', 'Left Side', 'Right Side', 'Interior', 'Dashboard', 'Odometer', 'Engine Bay', 'Tyres', 'Video Taken'].map(item => (
+                                <label key={item} className="flex items-center gap-2">
+                                    <input type="checkbox" className="checkbox" /> {item}
+                                </label>
+                            ))}
                         </div>
                     </div>
 
@@ -358,8 +650,13 @@ export default function CarForm({ carId, onCancel, onSuccess }: CarFormProps) {
 
                 <div className="flex justify-end gap-4 pt-6 border-t border-gray-100 mt-6 sticky bottom-0 bg-white p-4 shadow-top z-10">
                     <button type="button" onClick={onCancel} className="btn-secondary">Cancel</button>
-                    <button type="submit" className="btn-primary flex items-center gap-2">
-                        <i className="fas fa-save"></i> {carId ? 'Update Details' : 'Save Details'}
+                    <button
+                        type="submit"
+                        disabled={isUploading}
+                        className="btn-primary flex items-center gap-2 disabled:opacity-50"
+                    >
+                        <i className={`fas ${isUploading ? 'fa-spinner fa-spin' : 'fa-save'}`}></i>
+                        {carId ? 'Update Details' : 'Save Details'}
                     </button>
                 </div>
             </form>

@@ -95,10 +95,25 @@ export async function deleteCar(id: number): Promise<void> {
     }
 }
 
-export async function uploadImage(file: File): Promise<string> {
+/**
+ * Upload a file (image/video) to Vercel Blob storage.
+ * In production, uploads to /api/upload → Vercel Blob.
+ * In development, creates a local object URL for preview.
+ */
+export async function uploadFile(file: File): Promise<{ url: string; size: number }> {
     if (!isProduction) {
-        // In dev, return object URL
-        return URL.createObjectURL(file);
+        // In dev, return base64 data URL so it persists in localStorage
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve({
+                    url: reader.result as string,
+                    size: file.size,
+                });
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     }
 
     const res = await fetch(`${API_BASE}/upload`, {
@@ -111,11 +126,15 @@ export async function uploadImage(file: File): Promise<string> {
     });
 
     if (!res.ok) {
-        throw new Error('Upload failed');
+        const error = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(error.error || 'Upload failed');
     }
 
     const data = await res.json();
-    return data.url;
+    return {
+        url: data.url,
+        size: data.size || file.size,
+    };
 }
 
 export async function seedDatabase(): Promise<void> {
