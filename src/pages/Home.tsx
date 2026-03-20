@@ -148,9 +148,9 @@ export default function Home() {
                         <div className="relative">
                             <div className="absolute -inset-4 bg-orange-100 rounded-full blur-3xl opacity-30"></div>
                             <img
-                                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800"
-                                alt="Car Dealer Shake Hands"
-                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500"
+                                src="/Anand Picture.jpeg"
+                                alt="V. Anand - Sri Tiruchendur Cars"
+                                className="relative rounded-2xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 object-cover"
                             />
                         </div>
                     </div>
